@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Поиск товаров</title>
+</head>
+<body>
+  <h1>Поиск товаров</h1>
+  <form id="searchForm">
+    <input type="text" id="searchInput" placeholder="Что ищем?" />
+    <button type="submit">Поиск</button>
+  </form>
+  <div id="results"></div>
+
+  <script>
+    const form = document.getElementById("searchForm");
+    const resultsDiv = document.getElementById("results");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault(); // Предотвращаем перезагрузку страницы
+      const query = document.getElementById("searchInput").value;
+
+      try {
+        const response = await fetch(`/search?q=${encodeURIComponent(query)}`);
+        const results = await response.json();
+
+        resultsDiv.innerHTML = results
+          .map((item) => `<p><strong>${item.name}</strong>: ${item.description}</p>`)
+          .join("");
+      } catch (err) {
+        console.error(err);
+        resultsDiv.textContent = "Ошибка поиска.";
+      }
+    });
+  </script>
+</body>
+</html>
